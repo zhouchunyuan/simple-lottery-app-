@@ -13,6 +13,8 @@ last edited: May 2017
 import sys, random
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import *
+import simpleaudio as sa
+import time
 
 
 class Lottery(QtGui.QMainWindow):
@@ -52,7 +54,11 @@ class Board(QtGui.QFrame):
 
     numberUsed = []
 
-    heartSnd = QtGui.QSound("heart.wav")
+    #heartSnd = QtGui.QSound("heart.wav")
+    heartSnd = sa.WaveObject.from_wave_file("heart.wav")
+    CoinSnd = sa.WaveObject.from_wave_file("Pickup_Coin.wav")
+    playHeartSound = None
+    playCoinSound = None
 
     def __init__(self, parent):
         super(Board, self).__init__(parent)
@@ -95,8 +101,8 @@ class Board(QtGui.QFrame):
         self.isPaused = not self.isPaused
         
         if self.isPaused:
-            #self.timer.stop()
-            self.heartSnd.play()
+
+            self.playHeartSound = self.heartSnd.play()
             self.msg2Statusbar.emit("generating number ...")
             
         else:
@@ -130,7 +136,7 @@ class Board(QtGui.QFrame):
         if self.isPaused and not self.timer.isActive():
             R,G,B = 255,0,0
             SIZE = maxSize
-            self.numberUsed.append(self.NUM)
+            
 
             msg = "  中奖号码："
             for i,n in enumerate(self.numberUsed):
@@ -212,9 +218,15 @@ class Board(QtGui.QFrame):
                     self.Interval +=1
                     if self.Interval > 10:
                         self.timer.stop()
+                        self.numberUsed.append(self.NUM)
                         self.msg2Statusbar.emit("Congratulations ^_^ ...")
                 else:
-                    
+##                    if self.playCoinSound == None:
+##                        self.playCoinSound = self.CoinSnd.play()
+##                    elif not self.playCoinSound.is_playing():
+##                        self.playCoinSound = self.CoinSnd.play()                    
+                    self.playCoinSound = self.CoinSnd.play()
+                    time.sleep(0.1)
                     self.Interval = 1
                 
 
