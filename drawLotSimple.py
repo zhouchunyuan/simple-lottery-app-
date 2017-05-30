@@ -43,12 +43,14 @@ class Lottery(QtGui.QMainWindow):
 class Board(QtGui.QFrame):
 
     TOTAL = 200
-    
+    NUM = 0 # random number
     msg2Statusbar = QtCore.pyqtSignal(str)
 
     Speed = 30
     Count = 0
     Interval = 1
+
+    numberUsed = []
 
     heartSnd = QtGui.QSound("heart.wav")
 
@@ -67,7 +69,7 @@ class Board(QtGui.QFrame):
     def initBoard(self):     
 
         self.timer = QtCore.QBasicTimer()
-       
+        
         self.setFocusPolicy(QtCore.Qt.StrongFocus)
         self.isStarted = False
         self.isPaused = False
@@ -122,11 +124,20 @@ class Board(QtGui.QFrame):
         maxSize = int(screen.height()*0.5)
         SIZE = random.randint(minSize,maxSize)
 
-        NUM = random.randint(1,self.TOTAL)
-
+        
+        # pick up a number when timer stops
+        # display it in red and large font
         if self.isPaused and not self.timer.isActive():
             R,G,B = 255,0,0
             SIZE = maxSize
+            self.numberUsed.append(self.NUM)
+
+            msg = "  中奖号码："
+            for i,n in enumerate(self.numberUsed):
+                msg += "\n  ("+str(i+1)+") "+str(n)
+            painter.setFont(QtGui.QFont('Decorative', 20))
+            painter.drawText(event.rect(), QtCore.Qt.AlignTop, msg )
+
         else:
             self.drawPoints(painter)
             
@@ -134,7 +145,7 @@ class Board(QtGui.QFrame):
         painter.setPen(QtGui.QColor(R, G, B))
         
         painter.setFont(QtGui.QFont('Decorative', SIZE))
-        painter.drawText(event.rect(), QtCore.Qt.AlignCenter, str(NUM))
+        painter.drawText(event.rect(), QtCore.Qt.AlignCenter, str(self.NUM))
 
         
 
@@ -179,7 +190,23 @@ class Board(QtGui.QFrame):
             if self.Count % self.Interval == 0:
                 self.Count = 0
                 self.update()
-                #sound_file = "Pickup_Coin.wav"
+
+                while 1:
+                    self.NUM = random.randint(1,self.TOTAL)
+                    if not (self.NUM in self.numberUsed):break
+                    if len(self.numberUsed)==self.TOTAL:
+                        self.msg2Statusbar.emit("Oops...All number used!!")
+                        msg = QMessageBox()
+                        msg.setIcon(QMessageBox.Warning)
+
+                        msg.setText("注意")
+                        msg.setInformativeText("奖池满了！")
+                        msg.setWindowTitle("退出")
+                        msg.setDetailedText("所有人都中奖了，我要休息了^_^")
+                        msg.setStandardButtons(QMessageBox.Ok )
+                           
+                        retval = msg.exec_()
+                        sys.exit()
 
                 if self.isPaused:
                     self.Interval +=1
