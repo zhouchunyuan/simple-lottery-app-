@@ -10,7 +10,7 @@ import sun.audio.*;
 
         
 public class Main extends JPanel{
-/*   String[] type = { "Serif","SansSerif","ÂÆã‰Ωì"}; 
+/*   String[] type = { "Serif","SansSerif","ÀŒÃÂ"}; 
    int[] styles = { Font.PLAIN, Font.ITALIC, Font.BOLD, Font.ITALIC + Font.BOLD };
    String[] stylenames = { "Plain", "Italic", "Bold", "Bold & Italic" };
    
@@ -58,7 +58,7 @@ public void getNumOfPeople()
             check = true;
         try
         {
-            number_of_peopel = Integer.parseInt(JOptionPane.showInputDialog("ÂèÇÂä†ÊäΩÂ•ñ‰∫∫Êï∞: "));
+            number_of_peopel = Integer.parseInt(JOptionPane.showInputDialog("≤Œº”≥ÈΩ±»À ˝: "));
         }
         catch(NumberFormatException nfe)
         {
@@ -88,7 +88,7 @@ public void bell()
 public void autoSize()
 {
       String listString = String.join("<br>", list);
-      listLabel.setText("<html>‰∏≠Â•ñÂè∑Á†ÅÔºö<br>"+listString+"</html>");
+      listLabel.setText("<html>÷–Ω±∫≈¬Î£∫<br>"+listString+"</html>");
       Dimension size = listLabel.getPreferredSize();
       listLabel.setBounds(20, 20,
              size.width, size.height);        
@@ -127,7 +127,7 @@ public void autoSize()
                 switch( keyCode )
                 {
                         case KeyEvent.VK_SPACE:
-                        //JOptionPane.showMessageDialog(null, "‰Ω†Â•Ω");
+                        //JOptionPane.showMessageDialog(null, "ƒ„∫√");
                         stop = !stop;
                         if(stop){
                                 pane.stopSound();
