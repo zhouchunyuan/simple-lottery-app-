@@ -8,8 +8,9 @@ import java.util.ArrayList;
 import java.io.*;
 import sun.audio.*;
 
+
         
-public class Main extends JPanel{
+public class Main extends BackgroundPanel{
 /*   String[] type = { "Serif","SansSerif","ËÎÌå"}; 
    int[] styles = { Font.PLAIN, Font.ITALIC, Font.BOLD, Font.ITALIC + Font.BOLD };
    String[] stylenames = { "Plain", "Italic", "Bold", "Bold & Italic" };
@@ -30,12 +31,12 @@ AudioStream audioStream1 = null;
 AudioStream audioStream2 = null; 
 ContinuousAudioDataStream continuousaudiostream = null;
 
-JLabel listLabel = new JLabel("",JLabel.LEFT);
+JLabel listLabel = new JLabel("",JLabel.RIGHT);
 ArrayList<String> list = new ArrayList<String>();
 int number_of_peopel=200;
 
 public Main(){
-
+        super(Toolkit.getDefaultToolkit().getImage(Main.class.getResource("background.jpg")));
         getNumOfPeople();
         this.listLabel.setFont(new Font("Serif", Font.PLAIN, 20));
         try{
@@ -48,6 +49,7 @@ public Main(){
         }catch (Exception e){JOptionPane.showMessageDialog(null, e.toString());}
         
         playSound();
+        
 }
 public void getNumOfPeople()
 {
@@ -88,9 +90,10 @@ public void bell()
 public void autoSize()
 {
       String listString = String.join("<br>", list);
-      listLabel.setText("<html>ÖÐ½±ºÅÂë£º<br>"+listString+"</html>");
+      listLabel.setText("<html><p style='text-align:center'>ÖÐ½±ºÅÂë£º<br>"+listString+"</p></html>");
+      Dimension frameSize = Toolkit.getDefaultToolkit().getScreenSize();
       Dimension size = listLabel.getPreferredSize();
-      listLabel.setBounds(20, 20,
+      listLabel.setBounds(frameSize.width - 20 - size.width, 20,
              size.width, size.height);        
 }
 
@@ -102,7 +105,7 @@ public void autoSize()
         Main pane = new Main();
         JFrame f = new JFrame();
         //f.setLayout(new GridLayout(3, 1));
-        f.setIconImage(Toolkit.getDefaultToolkit().getImage(pane.getClass().getClassLoader().getResource("icon.jpg")));        
+        f.setIconImage(Toolkit.getDefaultToolkit().getImage(pane.getClass().getClassLoader().getResource("logo.png")));        
         JLabel numberLabel = new JLabel("         ",JLabel.CENTER);
         numberLabel.setFont(new Font("Serif", Font.PLAIN, 200));
       
@@ -167,6 +170,7 @@ public void autoSize()
           @Override
           public void run() {
             //Random rand = new Random();
+            pane.repaint();
             pane.autoSize();
             if(stop){
              numberLabel.setForeground(Color.red);
