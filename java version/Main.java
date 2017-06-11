@@ -66,8 +66,10 @@ public void playSound()
         AudioInputStream	audioInputStream = null;
         try
         {
-                audioInputStream = AudioSystem.getAudioInputStream(
-                        getClass().getClassLoader().getResourceAsStream(SOUND_FILENAME1));
+                InputStream audioSrc = getClass().getResourceAsStream(SOUND_FILENAME1);
+                //add buffer for mark/reset support
+                InputStream bufferedIn = new BufferedInputStream(audioSrc);
+                audioInputStream = AudioSystem.getAudioInputStream(bufferedIn);
         }
         catch (Exception e)
         {
@@ -103,8 +105,10 @@ public void bell()
         AudioInputStream	audioInputStream = null;
         try
         {
-                audioInputStream = AudioSystem.getAudioInputStream(
-                        getClass().getClassLoader().getResourceAsStream(SOUND_FILENAME2));
+                InputStream audioSrc = getClass().getResourceAsStream(SOUND_FILENAME2);
+                //add buffer for mark/reset support
+                InputStream bufferedIn = new BufferedInputStream(audioSrc);
+                audioInputStream = AudioSystem.getAudioInputStream(bufferedIn);
         }
         catch (Exception e)
         {
