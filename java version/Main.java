@@ -6,7 +6,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.ArrayList; 
 import java.io.*;
-import sun.audio.*;
+import javax.sound.sampled.*;
 
 
         
@@ -27,11 +27,9 @@ public class Main extends BackgroundPanel{
    }*/
 String SOUND_FILENAME1 = "heart.wav"; 
 String SOUND_FILENAME2 = "Pickup_Coin.wav"; 
-AudioStream audioStream1 = null;
-AudioStream audioStream2 = null; 
-ContinuousAudioDataStream continuousaudiostream = null;
+private Clip		m_clip;
 
-JLabel listLabel = new JLabel("",JLabel.RIGHT);
+JTextArea listLabel = new JTextArea("");
 ArrayList<String> list = new ArrayList<String>();
 int number_of_peopel=200;
 
@@ -39,15 +37,9 @@ public Main(){
         super(Toolkit.getDefaultToolkit().getImage(Main.class.getResource("background.jpg")));
         getNumOfPeople();
         this.listLabel.setFont(new Font("Serif", Font.PLAIN, 20));
-        try{
-                InputStream inputStream;
-                inputStream = getClass().getResourceAsStream(SOUND_FILENAME1);
-                audioStream1 = new AudioStream(inputStream); 
-                AudioData audiodata = audioStream1.getData();
-                continuousaudiostream = new ContinuousAudioDataStream(audiodata);
-                
-        }catch (Exception e){JOptionPane.showMessageDialog(null, e.toString());}
-        
+        this.listLabel.setEnabled(false);
+        this.listLabel.setOpaque(false);
+      
         playSound();
         
 }
@@ -71,28 +63,81 @@ public void getNumOfPeople()
 }
 public void playSound() 
 {
-    AudioPlayer.player.start(continuousaudiostream);
+        AudioInputStream	audioInputStream = null;
+        try
+        {
+                audioInputStream = AudioSystem.getAudioInputStream(
+                        getClass().getClassLoader().getResourceAsStream(SOUND_FILENAME1));
+        }
+        catch (Exception e)
+        {
+                JOptionPane.showMessageDialog(null, e.toString()); 
+        }
+        if (audioInputStream != null)
+        {
+                AudioFormat	format = audioInputStream.getFormat();
+                DataLine.Info	info = new DataLine.Info(Clip.class, format);
+                try
+                {
+                        m_clip = (Clip) AudioSystem.getLine(info);
+                        m_clip.open(audioInputStream);
+                }
+                catch (Exception e)
+                {
+                        JOptionPane.showMessageDialog(null, e.toString()); 
+                }
+
+                m_clip.loop(Clip.LOOP_CONTINUOUSLY);
+        }
+        else
+        {
+               JOptionPane.showMessageDialog(null, "no audio file"); 
+        }
 }
 public void stopSound() 
 {
-    AudioPlayer.player.stop(continuousaudiostream);
+    m_clip.close();
 }
 public void bell()
 {
-        try{
-                InputStream inputStream;
-                inputStream = getClass().getResourceAsStream(SOUND_FILENAME2);
-                audioStream2 = new AudioStream(inputStream);  
-                
-        }catch (Exception e){JOptionPane.showMessageDialog(null, e.toString());}
-     AudioPlayer.player.start(audioStream2);   
+        AudioInputStream	audioInputStream = null;
+        try
+        {
+                audioInputStream = AudioSystem.getAudioInputStream(
+                        getClass().getClassLoader().getResourceAsStream(SOUND_FILENAME2));
+        }
+        catch (Exception e)
+        {
+                JOptionPane.showMessageDialog(null, e.toString()); 
+        }
+        if (audioInputStream != null)
+        {
+                AudioFormat	format = audioInputStream.getFormat();
+                DataLine.Info	info = new DataLine.Info(Clip.class, format);
+                try
+                {
+                        m_clip = (Clip) AudioSystem.getLine(info);
+                        m_clip.open(audioInputStream);
+                }
+                catch (Exception e)
+                {
+                        JOptionPane.showMessageDialog(null, e.toString()); 
+                }
+
+                m_clip.loop(1);
+        }
+        else
+        {
+               JOptionPane.showMessageDialog(null, "no audio file"); 
+        }  
 }
 public void autoSize()
 {
-      String listString = String.join("<br>", list);
-      listLabel.setText("<html><p style='text-align:center'>ÖÐ½±ºÅÂë£º<br>"+listString+"</p></html>");
+      String listString = String.join("\n     ", list);
+      listLabel.setText("ÖÐ½±ºÅÂë£º\n     "+listString);
       Dimension frameSize = Toolkit.getDefaultToolkit().getScreenSize();
       Dimension size = listLabel.getPreferredSize();
+      if(size.height + 20 < frameSize.height)
       listLabel.setBounds(frameSize.width - 20 - size.width, 20,
              size.width, size.height);        
 }
