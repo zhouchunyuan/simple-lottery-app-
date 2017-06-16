@@ -75,7 +75,7 @@ public class Main extends JPanel {
                 check = true;
                 try {
                     Object response  = JOptionPane.showInputDialog(null,
-                                       "涓鍙风爜鑼冨洿1~", "鍙傚姞鎶藉浜烘暟: ",
+                                       "中奖号码范围1~", "参加抽奖人数: ",
                                        JOptionPane.QUESTION_MESSAGE,null,null,
                                        ""+number_of_peopel);
                     if (response == null)return false;//process cancel
@@ -119,7 +119,7 @@ public class Main extends JPanel {
 
         public void autoSize() {
             String listString = String.join("\n     ", list);
-            listArea.setText("涓鍙风爜锛歕n     "+listString);
+            listArea.setText("中奖号码：\n     "+listString);
             Dimension frameSize = this.getSize();
             Dimension size = listArea.getPreferredSize();
             if (size.height + 20 < frameSize.height)
@@ -181,7 +181,7 @@ public class Main extends JPanel {
                     int keyCode = e.getKeyCode();
                     switch ( keyCode ) {
                     case KeyEvent.VK_SPACE:
-                        //JOptionPane.showMessageDialog(null, "浣犲ソ");
+                        //JOptionPane.showMessageDialog(null, "你好");
                         stop = !stop;
                         if (stop) {
                             pane.stopSound();
