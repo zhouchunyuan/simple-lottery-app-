@@ -18,6 +18,7 @@ public class Main extends JPanel {
         private String SOUND_FILENAME1 = "heart.wav";
         private String SOUND_FILENAME2 = "Pickup_Coin.wav";
         private int LOGO_SIZE = 138;
+        private int gap = 15;
         private Clip		m_clip;
 
 
@@ -37,15 +38,26 @@ public class Main extends JPanel {
 
             Image image = Toolkit.getDefaultToolkit().getImage(Main.class.getResource("background.jpg"));//first method to get image
             g.drawImage(image, 0, 0, frameSize.width,frameSize.height, this);
+            
+            image = Toolkit.getDefaultToolkit().getImage(Main.class.getResource("100Y.jpg"));//first method to get image
+            int h = image.getHeight(null);
+            int w = image.getWidth(null);
+            float x_over_y = (float)w/(float)h;
+            int width100Y = (int)(x_over_y*LOGO_SIZE);
+            g.drawImage(image, gap, gap,width100Y,LOGO_SIZE, this);
+            
+            int logo_move_distance = frameSize.width - width100Y -LOGO_SIZE - gap;
             InputStream is = new BufferedInputStream(getClass().getResourceAsStream(("logo.png")));//second method to get image
             if (stop)
                 shift_x = 0;
             else
-                shift_x = (int)(0.25*frameSize.width+0.25*frameSize.width*Math.sin((float)count/30*3.14*2));
+                shift_x = (int)(0.5*logo_move_distance+0.5*logo_move_distance*Math.sin((float)count/30*3.14*2));
             //shift_x = shift_x % frameSize.width;
             try {
                 image = ImageIO.read(is);
-                g.drawImage(image, 240+shift_x, 13, LOGO_SIZE, LOGO_SIZE, this); // see javadoc for more info on the parameters
+                g.drawImage(image, 
+                        gap+width100Y+shift_x -5, gap, // start with an overlap position
+                        LOGO_SIZE, LOGO_SIZE, this); // see javadoc for more info on the parameters
             } catch (Exception e) {}
 
             Dimension size = numLabel.getPreferredSize();
