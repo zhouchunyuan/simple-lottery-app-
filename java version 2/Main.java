@@ -49,8 +49,9 @@ public class Main extends JPanel {
                         graph.setColor(new Color(r,g,b));
                         
                         double alfa = Math.random()*6.28;
-                        int x = (int)(R/2+R/2*Math.random()*Math.cos(alfa));
-                        int y = (int)(R/2+R/2*Math.random()*Math.sin(alfa));
+                        double rad = Math.random()*R/2;
+                        int x = (int)(R/2+rad*Math.cos(alfa));
+                        int y = (int)(R/2+rad*Math.sin(alfa));
                         x = x+w/2-R/2;
                         y = y+h-R/2-(int)sum_y;
                         graph.fillOval(x,y,(int)(Math.random()*20),(int)(Math.random()*20));
