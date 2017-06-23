@@ -30,7 +30,34 @@ public class Main extends JPanel {
         static boolean stop = false;
         static int count = 0;
         static int shift_x = 0;
-
+        
+        static int fire_life_time = 0;
+        private void fireworks(Graphics graph,int w,int h){
+                if(fire_life_time<90){
+                        fire_life_time++;
+                        //fire_life_time%=90;
+                        double acc_y = 0.5;
+                        double v0 = 40;
+                        double v_y = v0-fire_life_time*acc_y;
+                        double sum_y = v_y*fire_life_time;
+                        int R = fire_life_time*w/90;//firework max radius
+                        
+                        for(int i=0;i<5000;i++){
+                        int r = (((int)Math.round(Math.random()*4321))%200)+55;
+                        int g = (((int)Math.round(Math.random()*4321))%200)+55;
+                        int b = (((int)Math.round(Math.random()*4321))%200)+55;
+                        graph.setColor(new Color(r,g,b));
+                        
+                        double alfa = Math.random()*6.28;
+                        int x = (int)(R/2+R/2*Math.random()*Math.cos(alfa));
+                        int y = (int)(R/2+R/2*Math.random()*Math.sin(alfa));
+                        x = x+w/2-R/2;
+                        y = y+h-R/2-(int)sum_y;
+                        graph.fillOval(x,y,(int)(Math.random()*20),(int)(Math.random()*20));
+                        }
+                }
+        }
+        
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -48,11 +75,13 @@ public class Main extends JPanel {
             
             int logo_move_distance = frameSize.width - width100Y -LOGO_SIZE - gap;
             InputStream is = new BufferedInputStream(getClass().getResourceAsStream(("logo.png")));//second method to get image
-            if (stop)
-                shift_x = 0;
-            else
+            if (stop){
+                shift_x = 0;//stop logo
+                fireworks(g,frameSize.width,frameSize.height);
+            }else{
                 shift_x = (int)(0.5*logo_move_distance+0.5*logo_move_distance*Math.sin((float)count/30*3.14*2));
-            //shift_x = shift_x % frameSize.width;
+                
+            }//shift_x = shift_x % frameSize.width;
             try {
                 image = ImageIO.read(is);
                 g.drawImage(image, 
@@ -63,6 +92,8 @@ public class Main extends JPanel {
             Dimension size = numLabel.getPreferredSize();
             numLabel.setBounds((frameSize.width-size.width)/2, (frameSize.height-size.height)/2,
                                size.width, size.height);
+                               
+            
         }
 
         public Main() {
@@ -196,6 +227,7 @@ public class Main extends JPanel {
                         //JOptionPane.showMessageDialog(null, "ÄãºÃ");
                         stop = !stop;
                         if (stop) {
+                            fire_life_time = 0;//init fireworks
                             pane.stopSound();
                             pane.playSound(pane.SOUND_FILENAME2,1);
                             pane.list.add(pane.numLabel.getText());
