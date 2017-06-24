@@ -14,7 +14,12 @@ import java.awt.image.BufferedImage;
 
 
 public class Main extends JPanel {
-
+        
+        static final int FPS = 30;
+        static long delay = (long)(1000/FPS);
+        static long period = delay;
+        static int count = 0;
+        
         private String SOUND_FILENAME1 = "heart.wav";
         private String SOUND_FILENAME2 = "Pickup_Coin.wav";
         private int LOGO_SIZE = 138;
@@ -28,33 +33,39 @@ public class Main extends JPanel {
         private ArrayList<String> list = new ArrayList<String>();
         private int number_of_peopel=200;
         static boolean stop = false;
-        static int count = 0;
+        
         static int shift_x = 0;
         
         static int fire_life_time = 0;
         private void fireworks(Graphics graph,int w,int h){
+                
                 if(fire_life_time<90){
                         fire_life_time++;
-                        //fire_life_time%=90;
                         double acc_y = 0.5;
                         double v0 = 40;
-                        double v_y = v0-fire_life_time*acc_y;
-                        double sum_y = v_y*fire_life_time;
-                        int R = fire_life_time*w/90;//firework max radius
-                        
-                        for(int i=0;i<5000;i++){
-                        int r = (((int)Math.round(Math.random()*4321))%200)+55;
-                        int g = (((int)Math.round(Math.random()*4321))%200)+55;
-                        int b = (((int)Math.round(Math.random()*4321))%200)+55;
-                        graph.setColor(new Color(r,g,b));
-                        
-                        double alfa = Math.random()*6.28;
-                        double rad = Math.random()*R/2;
-                        int x = (int)(R/2+rad*Math.cos(alfa));
-                        int y = (int)(R/2+rad*Math.sin(alfa));
-                        x = x+w/2-R/2;
-                        y = y+h-R/2-(int)sum_y;
-                        graph.fillOval(x,y,(int)(Math.random()*20),(int)(Math.random()*20));
+                        double v_y;
+                        double sum_y;
+                        int R;//firework max radius
+                        int N = 3;
+                        for(int j=0;j<N;j++){
+                                v_y = v0-fire_life_time*acc_y;
+                                sum_y = v_y*fire_life_time;
+                                R = fire_life_time*w/90;//firework max radius
+                                
+                                for(int i=0;i<1000;i++){
+                                        int r = (((int)Math.round(Math.random()*4321))%200)+55;
+                                        int g = (((int)Math.round(Math.random()*4321))%200)+55;
+                                        int b = (((int)Math.round(Math.random()*4321))%200)+55;
+                                        graph.setColor(new Color(r,g,b));
+                                        
+                                        double alfa = Math.random()*6.28;
+                                        double rad = Math.random()*R/2;
+                                        int x = (int)(R/2+rad*Math.cos(alfa));
+                                        int y = (int)(R/2+rad*Math.sin(alfa));
+                                        x = x+j*(w/N)+(w/N/2)-R/2;
+                                        y = y+h-R/2-(int)sum_y;
+                                        graph.fillOval(x,y,(int)(Math.random()*20),(int)(Math.random()*20));
+                                }
                         }
                 }
         }
@@ -258,13 +269,13 @@ public class Main extends JPanel {
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    pane.count++;
-                    pane.count %= 30;
+                    count++;
+                    count %= FPS;
                     pane.generateNumber(stop);
                     pane.repaint();
                 }
             }
-            , 30, 30);
+            , delay, period);
 
 
 
