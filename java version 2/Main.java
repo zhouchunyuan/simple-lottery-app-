@@ -36,7 +36,7 @@ public class Main extends JPanel {
         
         static int shift_x = 0;
         
-        static int fire_life_time = 0;
+        static int fire_life_time = 90;//init as if finished
         private void fireworks(Graphics graph,int w,int h){
                 
                 if(fire_life_time<90){
@@ -237,7 +237,8 @@ public class Main extends JPanel {
                     switch ( keyCode ) {
                     case KeyEvent.VK_SPACE:
                         //JOptionPane.showMessageDialog(null, "ÄãºÃ");
-                        stop = !stop;
+                        if(fire_life_time>=90){
+                            stop = !stop;//change state until
                         if (stop) {
                             fire_life_time = 0;//init fireworks
                             pane.stopSound();
@@ -246,6 +247,7 @@ public class Main extends JPanel {
                             pane.autoSize();
                         } else {
                             pane.playSound(pane.SOUND_FILENAME1,Clip.LOOP_CONTINUOUSLY);
+                        }
                         }
                         break;
                     case KeyEvent.VK_ESCAPE:
