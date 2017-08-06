@@ -15,6 +15,8 @@ import java.awt.image.BufferedImage;
 
 public class Main extends JPanel {
         
+        static String lotnumberfile = "lotnumbers.txt";
+        
         static final int FPS = 30;
         static long delay = (long)(1000/FPS);
         static long period = delay;
@@ -112,7 +114,9 @@ public class Main extends JPanel {
             //super(Toolkit.getDefaultToolkit().getImage(Main.class.getResource("background.jpg")));
             setLayout(null);
             if (!getNumOfPeople())System.exit(0);
-
+            
+            readLotNumbrFile();//read already exist numbers
+            
             listArea.setFont(new Font("Serif", Font.PLAIN, 20));
             listArea.setEnabled(false);
             listArea.setOpaque(false);
@@ -123,6 +127,7 @@ public class Main extends JPanel {
             add(numLabel);
 
             playSound(SOUND_FILENAME1,Clip.LOOP_CONTINUOUSLY);
+            
         }
         public boolean getNumOfPeople() {
             boolean check;
@@ -236,7 +241,7 @@ public class Main extends JPanel {
                     int keyCode = e.getKeyCode();
                     switch ( keyCode ) {
                     case KeyEvent.VK_SPACE:
-                        //JOptionPane.showMessageDialog(null, "ÄãºÃ");
+                        //JOptionPane.showMessageDialog(null, "???");
                         if(fire_life_time>=90){
                             stop = !stop;//change state until
                         if (stop) {
@@ -244,6 +249,7 @@ public class Main extends JPanel {
                             pane.stopSound();
                             pane.playSound(pane.SOUND_FILENAME2,1);
                             pane.list.add(pane.numLabel.getText());
+                            pane.writeLotNumbrFile(pane.numLabel.getText()+"\r\n");
                             pane.autoSize();
                         } else {
                             pane.playSound(pane.SOUND_FILENAME1,Clip.LOOP_CONTINUOUSLY);
@@ -266,6 +272,8 @@ public class Main extends JPanel {
             f.setUndecorated(true);
 
             f.setVisible(true);
+            
+            if(pane.list.size()>0)pane.autoSize();//display the list incase the txtfile is not empty
 
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
@@ -283,7 +291,26 @@ public class Main extends JPanel {
 
         }
 
+        private void readLotNumbrFile() {
+            String line = null;
+            try (BufferedReader input = new BufferedReader(new InputStreamReader(new FileInputStream(lotnumberfile)))) {
+                while ((line = input.readLine()) != null) {
+                    list.add(line);
+                    //System.out.println(line);
+                }
 
+            } catch (Exception ex) {
+                System.err.format("IOException: %s%n", ex);
+            }
+        }
+        private void writeLotNumbrFile(String s) {
+            try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+                            new FileOutputStream(lotnumberfile, true)))) {
+                writer.write(s, 0, s.length());
+            } catch (IOException x) {
+                System.err.format("IOException: %s%n", x);
+            }
+        }
 
 
 }
